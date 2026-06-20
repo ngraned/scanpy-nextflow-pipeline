@@ -1,8 +1,8 @@
 import sys
 import scanpy as sc
 import warnings
-import shutil
-import os
+import pandas as pd
+import matplotlib.pyplot as plt
 
 warnings.filterwarnings('ignore')
 
@@ -39,22 +39,54 @@ print("Leiden clustering...")
 sc.tl.leiden(adata, resolution=0.7)
 n_clusters = len(adata.obs['leiden'].unique())
 
+print("Finding marker genes...")
+sc.tl.rank_genes_groups(adata, 'leiden', method='wilcoxon')
+
 print("Saving results...")
 adata.write_h5ad('adata_processed.h5ad')
 
-# Save UMAP to current directory (not figures/)
+# Save UMAP
+print("Generating UMAP visualization...")
 sc.pl.umap(adata, color='leiden', save=False, show=False)
-import matplotlib.pyplot as plt
 plt.savefig('umap.png', dpi=100, bbox_inches='tight')
 plt.close()
 
+# Save marker genes visualization (without using figures/ directory)
+print("Generating marker genes plot...")
+sc.set_figure_params(figsize=(12, 8))
+sc.pl.rank_genes_groups(adata, n_genes=5, save=False, show=False)
+plt.savefig('marker_genes_plot.png', dpi=100, bbox_inches='tight')
+plt.close()
+
+# Extract marker genes using built-in function
+result = sc.get.rank_genes_groups_df(adata, group=None)
+
+# Get top 5 genes per cluster
+top_genes_list = []
+for cluster in sorted(adata.obs['leiden'].unique()):
+    cluster_result = result[result['group'] == str(cluster)].head(5)
+    genes = ', '.join(cluster_result['names'].tolist())
+    top_genes_list.append({'Cluster': cluster, 'Top_Markers': genes})
+
+markers_df = pd.DataFrame(top_genes_list)
+
+# Write comprehensive report
 with open('report.txt', 'w') as f:
     f.write("PBMC ANALYSIS REPORT\n")
-    f.write("=" * 60 + "\n")
+    f.write("=" * 60 + "\n\n")
     f.write(f"Cells: {adata.n_obs}\n")
     f.write(f"Genes: {adata.n_vars}\n")
-    f.write(f"Clusters: {n_clusters}\n")
+    f.write(f"Clusters: {n_clusters}\n\n")
+    f.write("TOP 5 MARKER GENES PER CLUSTER\n")
+    f.write("-" * 60 + "\n")
+    for _, row in markers_df.iterrows():
+        f.write(f"Cluster {row['Cluster']}: {row['Top_Markers']}\n")
+
+# Save marker genes as CSV
+markers_df.to_csv('marker_genes.csv', index=False)
 
 print("=" * 60)
 print("COMPLETE!")
 print("=" * 60)
+print("\nMarker genes identified per cluster:")
+print(markers_df.to_string(index=False))
