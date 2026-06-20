@@ -1,34 +1,20 @@
 # Nextflow
+.nextflow/
 work/
-.nextflow*
 results/
-*.html
-*.svg
+.nextflow.log*
+
+# Data (don't upload)
+data/
+*.h5ad
+pbmc_data.h5ad
 
 # Python
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
-.venv
-
-# Data
-*.h5ad
-*.mtx
-*.tsv
-*.csv
-*.xlsx
-
-# OS
-.DS_Store
-Thumbs.db
+*.pyc
+.pytest_cache/
 
 # IDE
 .vscode/
 .idea/
 *.swp
-*.swo
-*~
