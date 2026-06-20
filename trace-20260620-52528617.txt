@@ -1,0 +1,2 @@
+task_id	hash	native_id	name	status	exit	submit	duration	realtime	%cpu	peak_rss	peak_vmem	rchar	wchar
+1	cf/46d211	4198	scanpy_analysis	FAILED	0	2026-06-20 14:35:29.475	11s	11s	156.9%	425.8 MB	6.5 GB	68.9 MB	26.6 MB

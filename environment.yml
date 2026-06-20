@@ -1,0 +1,13 @@
+name: scanpy-env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - scanpy=1.7.2
+  - numpy
+  - pandas
+  - scikit-learn
+  - matplotlib
+  - seaborn
+  - scipy
+  - importlib-metadata

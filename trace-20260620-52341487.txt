@@ -1,0 +1,2 @@
+task_id	hash	native_id	name	status	exit	submit	duration	realtime	%cpu	peak_rss	peak_vmem	rchar	wchar
+1	6d/f48c84	3453	scanpy_analysis	FAILED	2	2026-06-20 14:32:22.342	130ms	39ms	-	-	-	-	-
