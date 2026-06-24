@@ -2,6 +2,7 @@ process scanpy_analysis {
     publishDir "${params.outdir}", mode: 'copy'
     
     input:
+        path scanpy_script
         path matrix_dir
     
     output:
@@ -11,7 +12,7 @@ process scanpy_analysis {
     
     script:
     """
-    python ${projectDir}/scanpy_analysis.py ${matrix_dir}
+    python ${scanpy_script} ${matrix_dir}
     """
 }
 
@@ -19,5 +20,6 @@ workflow {
     if (!params.input_mtx) {
         error("--input_mtx is required")
     }
-    scanpy_analysis(params.input_mtx)
+    script_ch = Channel.fromPath("${projectDir}/scanpy_analysis.py")
+    scanpy_analysis(script_ch, params.input_mtx)
 }
