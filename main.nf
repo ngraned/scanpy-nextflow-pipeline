@@ -20,6 +20,8 @@ workflow {
     if (!params.input_mtx) {
         error("--input_mtx is required")
     }
-    script_ch = Channel.fromPath("${projectDir}/scanpy_analysis.py")
-    scanpy_analysis(script_ch, params.input_mtx)
+     scanpy_analysis(
+        params.input_mtx,
+        file("${projectDir}/scanpy_analysis.py")
+    )
 }
